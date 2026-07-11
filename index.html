@@ -480,22 +480,20 @@ function gotoSection(i) {
 }
 
 /* ═══════════════ READER ═══════════════ */
-let readTimerInt = null, fastReadFlag = false;
-
 function renderReader() {
-  clearInterval(readTimerInt);
-  fastReadFlag = false;
   const subj = curSubj, sec = subj.sections[curSecIdx];
-  const wordCount = sec.clauses.reduce((n, c) => n + (c.label + " " + c.text).split(/\s+/).length, 0);
-  const timerDuration = Math.min(80, Math.max(30, Math.ceil(wordCount / 200) * 60));
   const already = secStatus(subj.id, sec.id) === "complete";
   const sdExisting = secData(subj.id, sec.id);
   const hasPriorAttempt = !!(sdExisting && (sdExisting.attempts || []).length > 0);
-  const skipLock = already || hasPriorAttempt;
 
   const clauses = sec.clauses.map(c => `<div class="clause-block">
     <div class="clause-label">${esc(c.label)}</div><p>${esc(c.text)}</p>
   </div>`).join("");
+
+  let msg;
+  if (already) msg = "You've already passed this section — review freely or retake the check.";
+  else if (hasPriorAttempt) msg = "You've attempted this section before — retake the check whenever you're ready.";
+  else msg = "Read through this section, then take the comprehension check whenever you're ready.";
 
   $("#subj-main").innerHTML = `
     <div class="reader-head">
@@ -504,39 +502,11 @@ function renderReader() {
     </div>
     <div class="reader-body" id="reader-body">${clauses}</div>
     <div class="timer-banner" id="timer-banner">
-      <span id="timer-msg">Read through this section carefully. Comprehension check unlocks in <strong id="timer-n">${timerDuration}</strong>s</span>
-      <button class="btn btn-primary" id="quiz-btn" ${skipLock ? "" : "disabled"}>Take comprehension check →</button>
+      <span id="timer-msg">${msg}</span>
+      <button class="btn btn-primary" id="quiz-btn">Take comprehension check →</button>
     </div>`;
 
-  const readStart = Date.now();
-  let scrolledToBottom = false;
-  $("#reader-body").addEventListener("scroll", function() {
-    if (!scrolledToBottom && this.scrollTop + this.clientHeight >= this.scrollHeight - 50) {
-      scrolledToBottom = true;
-      const elapsed = (Date.now() - readStart) / 1000;
-      if (elapsed < timerDuration * 0.5) fastReadFlag = true;
-    }
-  });
-
-  let left = timerDuration;
-  if (already) {
-    $("#timer-msg").innerHTML = `You've already passed this section — review freely or retake the check.`;
-  } else if (hasPriorAttempt) {
-    $("#timer-msg").innerHTML = `You've attempted this section before — retake the check whenever you're ready.`;
-  } else {
-    readTimerInt = setInterval(() => {
-      left--;
-      const n = $("#timer-n");
-      if (!n) { clearInterval(readTimerInt); return; }
-      n.textContent = left;
-      if (left <= 0) {
-        clearInterval(readTimerInt);
-        $("#timer-msg").textContent = "Ready when you are.";
-        $("#quiz-btn").disabled = false;
-      }
-    }, 1000);
-  }
-  $("#quiz-btn").onclick = () => { clearInterval(readTimerInt); renderSubject("quiz"); };
+  $("#quiz-btn").onclick = () => { renderSubject("quiz"); };
 }
 
 /* ═══════════════ QUIZ ═══════════════ */
@@ -583,7 +553,7 @@ async function submitQuiz() {
   btn.disabled = true; btn.innerHTML = `<span class="spin"></span> Grading…`;
   const subj = curSubj, sec = subj.sections[curSecIdx];
   const timeSeconds = Math.round((Date.now() - quiz.started) / 1000);
-  const r = await api({ action: "grade", quizKey: quiz.quizKey, answers: quiz.answers, timeSeconds, fastRead: fastReadFlag });
+  const r = await api({ action: "grade", quizKey: quiz.quizKey, answers: quiz.answers, timeSeconds });
   if (r.error) {
     $("#subj-main").innerHTML = `<div class="quiz-wrap"><div class="err">${esc(r.error)}</div><button class="btn btn-ghost" onclick="renderSubject('reader')">← Back to reading</button></div>`;
     return;
@@ -730,16 +700,15 @@ function fmtTime(s) {
 }
 
 function memberStats(m) {
-  let passed = 0, attempts = 0, time = 0, last = m.lastActive || 0, fast = false;
+  let passed = 0, attempts = 0, time = 0, last = m.lastActive || 0;
   SUBJECTS.forEach(subj => subj.sections.forEach(sec => {
     const d = m.subjects?.[subj.id]?.sections?.[sec.id];
     if (!d) return;
     if (d.status === "complete") passed++;
     attempts += (d.attempts || []).length;
     time += d.timeSpentSeconds || 0;
-    if ((d.attempts||[]).some(a=>a.fastRead)) fast = true;
   }));
-  return { passed, attempts, time, last, fast };
+  return { passed, attempts, time, last };
 }
 
 function renderMembersTab() {
@@ -754,7 +723,7 @@ function renderMembersTab() {
     else if (s.passed > 0 || s.attempts > 0) inprog++;
     const chip = s.passed === total ? `<span class="chip green">Complete</span>` : (s.passed>0||s.attempts>0) ? `<span class="chip amber">In progress</span>` : `<span class="chip grey">Not started</span>`;
     return `<tr onclick="openDetail(${i})">
-      <td><b>${esc(m.name)}</b> ${s.fast ? '<span class="flag" title="Fast read detected">⚡</span>' : ''}<br><span style="color:var(--muted);font-size:12px">${esc(m.email)}</span></td>
+      <td><b>${esc(m.name)}</b><br><span style="color:var(--muted);font-size:12px">${esc(m.email)}</span></td>
       <td><span class="role-badge" style="margin:0">${esc(m.role||"Member")}</span></td>
       <td><span class="minibar"><div style="width:${total?Math.round(s.passed/total*100):0}%"></div></span>${s.passed}/${total}</td>
       <td>${chip}</td>
@@ -804,8 +773,7 @@ function openDetail(i) {
           `<div class="qr">Q${qi+1}: Selected “${esc((q.selectedOption||"").slice(0,60))}${(q.selectedOption||"").length>60?"…":""}” <span class="${q.correct?"yes":"no"}">${q.correct?"✓":"✗"}</span></div>`).join("");
         return `<div class="att">
           <div class="hd">Attempt ${ai+1} (${new Date(a.ts).toLocaleString()}) — Score: ${a.score}/${a.total}
-          ${a.total && a.score/a.total >= .8 ? '<span style="color:var(--green)">PASSED</span>' : ''}
-          ${a.fastRead ? '<span class="flag"> ⚡ Fast read detected on attempt '+(ai+1)+'</span>' : ''}</div>
+          ${a.total && a.score/a.total >= .8 ? '<span style="color:var(--green)">PASSED</span>' : ''}</div>
           ${qr}</div>`;
       }).join("");
       attBlocks.push(`<details class="attempts"><summary>${esc(sec.title)} — ${atts.length} attempt${atts.length>1?"s":""}</summary>${inner}</details>`);
