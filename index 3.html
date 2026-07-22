@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEC Learning Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBF7EF; --card:#FFFFFF; --ink:#221A0F; --muted:#8A7A63; --faint:#B3A488;
+  --border:#EAE0CC; --border-strong:#DCCFB2;
+  --amber:#B45309; --amber-bright:#F59E0B; --amber-soft:#FDF3E3; --amber-line:#F1DDB8;
+  --green:#1D7A46; --green-soft:#E9F5EE; --red:#B3372F; --red-soft:#FBEDEB;
+  --serif:'Fraunces',Georgia,serif; --sans:'Inter',system-ui,sans-serif;
+  --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --shadow:0 1px 2px rgba(60,42,10,.06),0 6px 20px rgba(60,42,10,.07);
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit;font-size:15px;color:var(--ink)}
+a{color:var(--amber)}
+::selection{background:var(--amber-line)}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em}
+.hidden{display:none!important}
+
+/* ---------- brand ---------- */
+.brand-mark{width:38px;height:38px;border-radius:9px;object-fit:cover;box-shadow:0 2px 8px rgba(20,20,60,.35);flex:none}
+.brand-mark.lg{width:64px;height:64px;border-radius:12px}
+
+/* ---------- buttons / inputs ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;border:none;border-radius:10px;padding:11px 20px;font-weight:600;font-size:15px;transition:transform .08s ease,box-shadow .12s ease,background .12s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:linear-gradient(135deg,#D97706,#B45309);color:#fff;box-shadow:0 2px 10px rgba(180,83,9,.3)}
+.btn-primary:hover{box-shadow:0 4px 16px rgba(180,83,9,.4)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border-strong)}
+.btn-ghost:hover{color:var(--ink);border-color:var(--faint)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-sm{padding:6px 12px;font-size:13px;border-radius:8px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;padding:11px 13px;border:1px solid var(--border-strong);border-radius:10px;background:#fff;transition:border-color .12s,box-shadow .12s}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--amber-bright);box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+.err{background:var(--red-soft);color:var(--red);border:1px solid #EBC6C1;border-radius:10px;padding:10px 13px;font-size:14px;margin-bottom:14px}
+.ok-note{background:var(--green-soft);color:var(--green);border:1px solid #C4E3D0;border-radius:10px;padding:10px 13px;font-size:14px;margin-bottom:14px}
+
+/* ---------- login ---------- */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:
+  radial-gradient(1200px 600px at 80% -10%,rgba(245,158,11,.10),transparent 60%),
+  radial-gradient(900px 500px at -10% 110%,rgba(180,83,9,.08),transparent 55%),var(--paper)}
+.login-card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);padding:40px 36px}
+.login-head{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:28px}
+.login-head h1{font-size:27px;margin:16px 0 6px}
+.tagline{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:15.5px}
+.login-foot{text-align:center;margin-top:20px;font-size:13.5px}
+.login-foot button{background:none;border:none;color:var(--muted);font-size:13.5px;text-decoration:underline;text-underline-offset:3px}
+.login-foot button:hover{color:var(--amber)}
+
+/* ---------- topbar / shell ---------- */
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:12px 24px;background:rgba(251,247,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.topbar .title{font-family:var(--serif);font-weight:600;font-size:17px}
+.topbar .spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--amber-soft);border:1px solid var(--amber-line);color:#92400E;border-radius:999px;padding:5px 13px;font-size:13px;font-weight:600}
+.shell{max-width:1080px;margin:0 auto;padding:32px 24px 80px}
+
+/* ---------- dashboard ---------- */
+.greeting{font-size:30px;margin-bottom:4px}
+.role-badge{display:inline-block;font-family:var(--mono);font-size:12.5px;background:#fff;border:1px solid var(--border-strong);border-radius:7px;padding:4px 10px;color:var(--muted);margin:8px 0 22px}
+.overall{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;box-shadow:var(--shadow);margin-bottom:28px}
+.overall .lbl{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.pbar{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+.pbar>div{height:100%;background:linear-gradient(90deg,#F59E0B,#B45309);border-radius:99px;transition:width .5s ease}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:760px){.cards{grid-template-columns:1fr}.shell{padding:24px 16px 60px}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px}
+.card .row{display:flex;gap:18px;align-items:flex-start}
+.card h3{font-size:19px;line-height:1.3}
+.card .desc{color:var(--muted);font-size:14px;margin-top:6px}
+.card .meta{font-size:13px;color:var(--faint);display:flex;gap:14px}
+.chip{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:3px 11px}
+.chip.grey{background:#F1ECE0;color:var(--muted)}
+.chip.amber{background:var(--amber-soft);color:#92400E;border:1px solid var(--amber-line)}
+.chip.green{background:var(--green-soft);color:var(--green)}
+.ring{transform:rotate(-90deg)}
+.ring .bg{stroke:var(--border)}
+.ring .fg{stroke:url(#ringGrad);stroke-linecap:round;transition:stroke-dashoffset .6s ease}
+.ring-wrap{position:relative;flex:none}
+.ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--amber)}
+
+/* ---------- subject view ---------- */
+.subj-layout{display:grid;grid-template-columns:270px 1fr;gap:28px;align-items:start}
+@media(max-width:860px){.subj-layout{grid-template-columns:1fr}}
+.sidebar{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);position:sticky;top:76px}
+.sec-item{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:none;border:none;border-radius:9px;padding:10px 11px;font-size:13.5px;color:var(--ink);line-height:1.35}
+.sec-item:hover:not(:disabled){background:var(--amber-soft)}
+.sec-item.active{background:var(--amber-soft);font-weight:600}
+.sec-item:disabled{color:var(--faint);cursor:not-allowed}
+.sec-dot{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid var(--border-strong);color:var(--muted);background:#fff}
+.sec-dot.progress{background:var(--amber-bright);border-color:var(--amber-bright);color:#fff}
+.sec-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.subj-main{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);min-height:420px;display:flex;flex-direction:column;overflow:hidden}
+.back-link{background:none;border:none;color:var(--muted);font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;padding:4px 0}
+.back-link:hover{color:var(--amber)}
+
+/* ---------- reader ---------- */
+.reader-head{padding:26px 30px 0}
+.eyebrow{font-size:12px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.reader-head h1{font-size:24px;margin-bottom:4px}
+.reader-body{padding:20px 30px 26px;overflow-y:auto;max-height:56vh}
+.clause-block{border-left:3px solid var(--amber-bright);background:linear-gradient(90deg,rgba(245,158,11,.06),transparent 60%);border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:16px}
+.clause-label{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--amber);margin-bottom:6px;letter-spacing:.02em}
+.clause-block p{white-space:pre-line;font-size:14.5px}
+.timer-banner{margin:0 30px 24px;background:var(--amber-soft);border:1px solid var(--amber-line);border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:14px;color:#92400E}
+.timer-banner strong{font-variant-numeric:tabular-nums}
+
+/* ---------- quiz ---------- */
+.quiz-wrap{padding:30px}
+.q-progress{font-size:12.5px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.09em;margin-bottom:10px}
+.q-text{font-family:var(--serif);font-size:20px;line-height:1.45;margin-bottom:22px}
+.opt{display:flex;align-items:flex-start;gap:14px;width:100%;text-align:left;background:#fff;border:1.5px solid var(--border-strong);border-radius:12px;padding:14px 16px;margin-bottom:11px;font-size:14.5px;line-height:1.45;transition:border-color .1s,background .1s}
+.opt:hover{border-color:var(--amber-bright)}
+.opt.sel{border-color:var(--amber);background:var(--amber-soft)}
+.opt .letter{flex:none;width:28px;height:28px;border-radius:50%;background:var(--amber-soft);border:1px solid var(--amber-line);color:#92400E;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.opt.sel .letter{background:var(--amber);border-color:var(--amber);color:#fff}
+.opt.right{border-color:var(--green);background:var(--green-soft)}
+.opt.right .letter{background:var(--green);border-color:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-soft)}
+.opt.wrong .letter{background:var(--red);border-color:var(--red);color:#fff}
+.explain{font-size:13.5px;color:var(--red);background:var(--red-soft);border-radius:9px;padding:10px 14px;margin:-4px 0 14px}
+.quiz-foot{display:flex;justify-content:flex-end;margin-top:8px}
+
+/* ---------- complete states ---------- */
+.celebrate{padding:56px 30px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+.celebrate .big{font-size:52px;line-height:1}
+.celebrate h2{font-size:26px}
+.celebrate .stats{display:flex;gap:26px;color:var(--muted);font-size:14px;margin:6px 0 8px;flex-wrap:wrap;justify-content:center}
+.celebrate .stats b{color:var(--ink);font-size:18px;display:block;font-family:var(--serif)}
+
+/* ---------- admin ---------- */
+.tabs{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--border);padding-bottom:0}
+.tab{background:none;border:none;border-bottom:2.5px solid transparent;padding:9px 16px;font-size:14.5px;font-weight:600;color:var(--muted)}
+.tab.active{color:var(--amber);border-bottom-color:var(--amber)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:26px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+.stat .n{font-family:var(--serif);font-size:30px;font-weight:600}
+.stat .l{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-top:2px}
+table.members{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);font-size:13.5px}
+table.members th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:11px 14px;border-bottom:1px solid var(--border);background:#FDFAF3}
+table.members td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+table.members tr:last-child td{border-bottom:none}
+table.members tbody tr{cursor:pointer}
+table.members tbody tr:hover{background:var(--amber-soft)}
+.minibar{width:90px;height:6px;background:var(--border);border-radius:99px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:8px}
+.minibar>div{height:100%;background:linear-gradient(90deg,#F59E0B,#B45309)}
+.del-x{background:none;border:none;color:var(--faint);font-size:16px;padding:4px 8px;border-radius:6px}
+.del-x:hover{color:var(--red);background:var(--red-soft)}
+.panel-overlay{position:fixed;inset:0;background:rgba(34,26,15,.35);z-index:50}
+.detail-panel{position:fixed;top:0;right:0;bottom:0;width:min(560px,94vw);background:var(--card);z-index:51;box-shadow:-12px 0 40px rgba(34,26,15,.18);overflow-y:auto;padding:28px;animation:slidein .22s ease}
+@keyframes slidein{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+.detail-panel h2{font-size:22px;margin-bottom:2px}
+.detail-panel .sub{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+table.breakdown{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px}
+table.breakdown th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:7px 8px;border-bottom:1px solid var(--border)}
+table.breakdown td{padding:8px;border-bottom:1px solid var(--border)}
+details.attempts{margin-bottom:10px;border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:13px;background:#FDFAF3}
+details.attempts summary{cursor:pointer;font-weight:600}
+.att{margin:10px 0 4px;padding-left:8px;border-left:2px solid var(--border-strong)}
+.att .hd{font-weight:600;margin-bottom:4px}
+.att .qr{color:var(--muted);margin-left:8px}
+.att .qr .yes{color:var(--green)} .att .qr .no{color:var(--red)}
+.flag{color:#B45309;font-weight:700}
+.gen-q{border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;background:#fff}
+.gen-q .qt{font-weight:600;margin-bottom:10px}
+.gen-q .go{display:flex;gap:9px;align-items:flex-start;padding:7px 10px;border-radius:8px;font-size:13.5px;margin-bottom:5px;border:1px solid transparent}
+.gen-q .go.correct{background:var(--green-soft);border-color:#C4E3D0;font-weight:600}
+.gen-q .ex{font-size:12.5px;color:var(--muted);margin-top:8px;font-style:italic}
+.gen-q .acts{display:flex;gap:8px;margin-top:10px}
+.warn-banner{background:#FFF7E6;border:1px solid var(--amber-line);color:#92400E;border-radius:10px;padding:12px 16px;font-size:14px;margin-bottom:18px}
+.reg-row{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}
+.reg-row .em{flex:1;font-family:var(--mono);font-size:13px}
+.settings-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);margin-bottom:20px;max-width:620px}
+.settings-card h3{font-size:17px;margin-bottom:14px}
+.spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#B45309"/>
+</linearGradient></defs></svg>
+
+<div id="app"></div>
+
+<script>
+/* ═══════════════ CONFIG ═══════════════ */
+const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbwk2AyWHM3PsOMKIffZ_UJdj2DnaA_gid6v2LFV99_q0RkxlPCxrJ6E7wVdN0GFiAzScQ/exec";
+const LOGO_SRC = "WhatsApp%20Image%202026-07-14%20at%2015.13.39.jpeg";
+
+let sessionToken = sessionStorage.getItem("sec_token") || null;
+let currentUser  = JSON.parse(sessionStorage.getItem("sec_user") || "null");
+
+async function api(body) {
+  if (sessionToken) body.token = sessionToken;
+  const res = await fetch(SHEETS_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+const esc = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const $ = sel => document.querySelector(sel);
+const app = document.getElementById("app");
+
+/* ═══════════════ SUBJECT DATA — SEC CHARTER 2026–2027 (FINAL, 13 July 2026) ═══════════════ */
+const SUBJECTS = [
+  {
+    id: "charter",
+    title: "SEC Club Charter 2026–2027",
+    description: "Foundational governance document, based on the final Charter certified 13 July 2026. All committee members must complete this before taking on any responsibilities.",
+    estimatedMinutes: 45,
+    sections: [
+      { id: "definitions", title: "Part 1, Clause 3 — Definitions & Role Codes", clauses: [
+        { label:"Committee (cl. 3j)", text:"The team of individuals holding positions in the Club, subject to Part 4. \"Meeting\" separately means any occasion Members gather to perform Club activities under sub-clause 5(a)." },
+        { label:"Executive Committee / ExCo (cl. 3o)", text:"The President (R-01) and the four Vice Presidents (R-02 through R-05), collectively forming the Club's executive leadership." },
+        { label:"Eligible voter (cl. 3p)", text:"A Committee member holding a named role in the Club. Each eligible voter has one vote; a person holding more than one embedded role still holds a single vote. Where a vote is tied, the President holds the casting vote." },
+        { label:"Role Code / Department Code (cl. 3q)", text:"Permanent identifiers for roles (R-##) and departments (DEP-##). Codes do not change when titles are renamed — only Annex A's mapping changes. The Club may use separate document and event identifiers in its operational records without Charter effect." },
+        { label:"Sunway Nexus by SEC (cl. 3r)", text:"The Club's community platform connecting Members, stakeholders of Sunway Education Group, and clubs/societies operating under the Group, operated as a hybrid digital and physical ecosystem." },
+        { label:"Principal Advisor R-00 (cl. 3s)", text:"The University-appointed faculty member serving as the Club's primary institutional advisor. Distinct from any Co-Advisor(s), who require separate institutional approval under clause 21(e)." },
+        { label:"Unauthorised Person (cl. 3t)", text:"Any individual not formally permitted to access specific Club information, documents, discussions, records, decisions, or communication channels under this Charter." },
+        { label:"Tier 1 vs Tier 2 Member (cl. 3m–3n)", text:"A \"Tier 1 Member\" is a Community Pool participant who has joined Sunway Nexus by SEC at no cost. A \"Tier 2 Member\" is a registered, paid Active SEC Member — the tier that carries Committee eligibility." },
+        { label:"Second Party vs Third Party (cl. 3k–3l)", text:"\"Second Party\" means individuals involved in Club operations who are current employees (full-time or contracted) of the University/College. \"Third Party\" means individuals involved in Club operations who are not employees of the University/College." },
+        { label:"Student (cl. 3d)", text:"A currently enrolled, fee-paid student who is either an undergraduate/postgraduate student at the University, or a certificate/diploma/pre-university/Victoria University Bachelor of Business/professional accounting student at the College." }
+      ]},
+      { id: "club-info", title: "Part 1, Clauses 1–4 — Name, Objectives & Powers", clauses: [
+        { label:"1. Name and Address", text:"The Club's name is \"Sunway Entrepreneurs Club\" (SEC), address 5, Jalan Universiti, Bandar Sunway, 47500 Subang Jaya, Selangor. Instagram: @sunwayentrepreneurs. Gmail: sunwayentrepreneursclub@gmail.com. TikTok and Facebook are both stated as \"Not in use for the current term.\"" },
+        { label:"2(d). Vision", text:"To be Sunway University's leading entrepreneurship ecosystem — a self-sustaining platform of digital authority, owned community, and proven execution that produces operators, not just members, and that strengthens with every committee handover." },
+        { label:"2(e). Mission", text:"To build a community of aspiring entrepreneurs and innovators, fostering real-world skills, professional connections, and opportunities beyond campus." },
+        { label:"2(f). In pursuing the above", text:"Equip students with practical skills through curated training, mentorship, and hands-on projects; build the Club's digital presence as a credibility platform; grow Sunway Nexus by SEC as an owned community; deliver documented, repeatable events; maintain the Club's operational document system so each incoming Committee inherits a working system; and create internship/working-experience pathways through Sunway Education Group and industry partners." },
+        { label:"4. Powers", text:"The Club has the same powers as an individual, subject to this Charter. The Club may only exercise its powers, and use its income and assets, for the purposes stated in clause 2." }
+      ]},
+      { id: "membership", title: "Part 2, Clauses 5–6 — Activities & Membership", clauses: [
+        { label:"5(a). Activities", text:"Knowledge & Access Programmes (exposure to real operators, firms, tools, speaker/founder segments); Lifestyle & Community Programmes (recurring, low-pressure culture-building activities); the Annual Capstone Event (marks the year's efforts and the formal handover); and Digital infrastructure & member pathways (Sunway Nexus by SEC, digital promotion, internship/collaboration opportunities)." },
+        { label:"5(b). Other clubs", text:"Other clubs within Sunway Education Group may be invited to participate in the Club's events. Specific event formats and naming conventions live in the Club's operational documents, so named events can evolve each term without a Charter amendment." },
+        { label:"6(a). Two-tier membership", text:"Tier 1 (Community Pool — free): open to Members, to Sunway Education Group stakeholders (students, alumni, staff), and to clubs/societies under the Group, engaged via Sunway Nexus by SEC. Tier 2 (Active SEC Member — paid): an active Sunway University/College student who has paid the membership fee." },
+        { label:"6(b). Fees", text:"A one-time registration fee of RM10 for Tier 2 Membership, paid via bank transfer or QR code with proof of payment retained, receipted and recorded by the Treasurer (R-09). Tier 1 Membership is free. No renewal fee applies within the term." },
+        { label:"6(c). Voluntary participation", text:"Participation in Club events is voluntary. Tier 2 membership is NOT contingent on minimum attendance, and a Member shall not be marked inactive or lose membership solely for non-attendance — this is an explicit variation from the template, which otherwise ties inactivity to termination." },
+        { label:"6(d). Tier benefits", text:"Active Tier 2 Members get priority registration for limited-seat events, free/discounted ticketed entry, Committee eligibility, a year-end certificate, and direct network connection. Tier 1 Members get relevant Nexus sub-group access, public-event invitations, and general content — but no voting rights, priority access, certificate, or Committee eligibility." },
+        { label:"6(e)–(f). Termination", text:"Grounds: damaging Club facilities/equipment; transgression, harassment, or ethics violation against Members or the Club; or involvement in illegal activity against the Student Code of Conduct. Minimum process: written notice specifying grounds; at least 7 days for the Member to respond in writing; a documented, reasoned decision by the VP holding the People & Operations portfolio; and one right of appeal to the President (R-01)." },
+        { label:"6(g)–(h). Register & data handling", text:"A register of members (name, iMail, tier, join date, termination date if any) must be maintained and sent to Student LIFE monthly. Personal data is collected solely for registration, administration, and communication; access restricted to authorised Committee members; retained only as long as reasonably required; former Members may request deletion via the VP, People & Operations." },
+        { label:"6(i). Governance rests with the Committee", text:"Members (both tiers) participate in the Club but hold no decision-making or voting rights, and do not vote on meeting validity, amendment, dissolution, removal, or any other Club decision. Oversight of the Committee runs through the Principal Advisor (R-00) and Student LIFE." },
+        { label:"6(j). Nexus Associate designation", text:"Active Tier 2 Members may use \"Nexus Associate, Sunway Entrepreneurs Club\" on external platforms. Restricted to current Tier 2 Members; confers no committee authority or representation rights; the Club may approve, revoke, or restrict its use for misconduct or misuse." }
+      ]},
+      { id: "meetings", title: "Part 3, Clauses 7–8 — AGM & EGM", clauses: [
+        { label:"7(a)–(b). Annual General Meeting", text:"An AGM must be convened annually at the end of each term to officiate the election/appointment of the new Committee. It is valid only when: chaired by the President; attended by at least 70% of active Committee members (not 50% of Members — a stated variation from the template); supervised by at least 1 representative each from Student LIFE and SUSC/SCC; successfully elects/appoints the new Committee; and successfully hands over finances, assets, and all operational documents/records." },
+        { label:"7(c). AGM minutes", text:"AGM minutes must always be submitted to Student LIFE and SUSC/SCC." },
+        { label:"8(a)–(b). Extraordinary General Meeting", text:"An EGM is a special meeting to resolve matters demanding immediate attention. It can only be convened if petitioned by at least 70% of active Committee members, who must decide the date, time, venue, and agenda." },
+        { label:"8(c). EGM validity", text:"An EGM is valid only when: chaired by any representative from Student LIFE (note — not the President, unlike the AGM); attended by at least 70% of active Committee members; supervised by at least 1 representative from SUSC/SCC; and the agenda is successfully resolved. Resolutions must be carried out by the relevant parties, and minutes always go to Student LIFE and SUSC/SCC." }
+      ]},
+      { id: "committee-structure", title: "Part 4, Clauses 9–13 — Committee, Vacancies & Main Positions", clauses: [
+        { label:"9. Eligibility for Position", text:"An individual must be a Tier 2 Member, an active University/College student, and meet any role-specific qualification in Annex B (e.g. the Club Auditor's finance background). Final-year Members and Members undertaking an internship are NOT barred from serving — this removes a bar the template otherwise imposes; an interning officer's trained deputy maintains continuity during any overlap." },
+        { label:"10. Term of Office", text:"The Committee term runs 01/03/2026 to 28/02/2027, unless Student LIFE or SUSC/SCC determines otherwise. Each term must be selected by election or appointment at a valid AGM; individuals may refuse nomination/appointment; a valid Committee must fill all main positions (clause 12) and any other positions (clause 13)." },
+        { label:"11. Vacancies", text:"A position becomes vacant on signed resignation, ceasing to be a Student, or removal under clause 28. Where a vacancy materially affects operations, replacement should happen within 14 days (not 30) — pending replacement, Annex B's fallback owners temporarily assume the function. A vacancy alone never dissolves the Club; the \"train your replacement\" practice (every Head develops their Vice) keeps continuity, and if ExCo falls below 3 active members, R-00 and Student LIFE may approve temporary custodianship. Dissolution is a last resort, not automatic." },
+        { label:"12(a). President (R-01)", text:"Provides leadership and direction; oversees day-to-day operations; is the official spokesperson; is the final escalation authority for disputes, deadlocks, conflicts of interest, and high-impact decisions; and permanently holds the Brand & Content portfolio (R-02) directly." },
+        { label:"12(b). Vice Presidents (R-02–R-05)", text:"Oversee overall projects and deputise for the President when required. Four portfolio leads (current titles/portfolios in Annex A) — Brand & Content is permanently held by the President rather than independently assigned — each VP decides independently within their portfolio and together forms the succession pool under clause 11." },
+        { label:"12(c)–(d). Secretary & Treasurer", text:"Secretary (R-06): manages Club records/paperwork; a standalone role supporting all portfolios (minutes, documentation systems, records, governance tracking) under R-01's strategic direction. Treasurer (R-09): manages funds and financial records, holds budget approval subject to the no-self-approval rule — R-09 is a standalone control function, NOT embedded in any VP portfolio, operating under R-01's strategic direction while coordinating operationally with the relevant portfolio per budget." },
+        { label:"12(e). Collective Executive Mode", text:"In normal operations decisions are made at the lowest appropriate level: each VP decides independently within their portfolio, and the President is inactive by default, decisive only when escalation is triggered. Escalation conditions and decision-authority mapping sit in Annex B, which forms part of the Charter." },
+        { label:"13. Other Positions", text:"Added/removed as needed at an AGM, and must not overlap existing responsibilities. Comprise the Control & Support Officers — Vice Secretary (R-07), Club Auditor (R-08), Vice Treasurer (R-10), and AI & Web Innovation Officer (R-11) — plus Heads/Vice Heads of Department, Parallel Leaders, and departmental executives (full registry in Annex A). The Club Auditor (R-08) is fully independent on audit findings, cannot be placed under a department it reviews, and may escalate directly to R-00 if access is refused." }
+      ]},
+      { id: "no-confidence", title: "Part 4, Clause 28 — Removal of Committee Members", clauses: [
+        { label:"28(a). Grounds", text:"A Committee member (including any ExCo member and the President) may be removed only via a Vote of No Confidence, on documented grounds: (i) persistent misconduct/misalignment — at least 2 documented incidents within 30 days; (ii) consistent failure to lead/manage — 2 missed reporting cycles or a breakdown exceeding 14 days; (iii) absence from 2 consecutive required meetings, or 3 instances of non-participation within 30 days, without notice/valid reason; (iv) verified breach of the no-self-approval rule, financial integrity, or conflict-of-interest obligations; (v) verified attempt to remove/discipline a member without due process; or (vi) verified misrepresentation of role, title, or authority creating governance/reputational/operational risk." },
+        { label:"28(b)(i). Notice & ballot", text:"Removal requires formal written notice via the official club email, initiated by 2+ VPs jointly, 3+ HODs jointly, or a majority of the combined ExCo+HOD layer — followed by a 72-hour written response window (extendable up to 24 hours for exams, medical reasons, or family emergencies), an evidence-based deliberation session chaired by the Principal Adviser (or Student LIFE rep if unavailable), and an independent secret ballot requiring at least 80% participation and a two-thirds (2/3) supermajority." },
+        { label:"28(b)(i) continued — quorum & re-votes", text:"If quorum is not met, the vote is postponed and reconvened within 7 days. If the threshold is not met, no further vote on substantially the same allegations may be initiated within 60 days. A successful vote immediately freezes the affected member's role. If the President is the subject, a neutral Vice President manages the process. No campaigning through official channels and no coercion is permitted." },
+        { label:"28(b)(ii)–(iii). Review & final approval", text:"After the ballot: a formal review by the Principal Adviser, then final approval from Student LIFE before removal is actually enacted. This Vote of No Confidence is the Club's sole process for removing a Committee member (clause 28(d))." },
+        { label:"28(c). After removal", text:"The affected portfolio is temporarily reassigned by agreement among remaining Vice Presidents (or by R-01 if no agreement). An open call for nominations issues within 48 hours; any Committee member of at least 4 weeks' standing may be nominated with written consent; election is by secret ballot among ExCo and HODs by simple majority, with R-00 casting the deciding vote on a tie; a documented handover completes within 7 days." }
+      ]},
+      { id: "finance", title: "Part 5, Clauses 14–19 — Finances, Assets & Communication Accounts", clauses: [
+        { label:"15. Source of Funds", text:"Membership fees (cl. 6(b)); business ventures and events organised by the Club; sponsorship income and in-kind contributions; subsidies allocated by Student LIFE; and any other source abiding by the C&S Handbook." },
+        { label:"16. Management of Funds", text:"The Club must keep true and fair accounts, retain proof of payment for every transaction, ensure transactions benefit the Club (not individuals), submit financial statements to Student LIFE monthly, and hand all funds to the incoming Committee at term end." },
+        { label:"16(g). No-self-approval rule", text:"No officer, Committee member, or department may approve any activity, budget, reimbursement, payment, proposal, or decision in which they are directly involved as an executor or beneficiary. Where a conflict exists, approval transfers to the President (R-01) or a neutral Vice President." },
+        { label:"16(h). Treasurer gatekeeping", text:"No event, activity, purchase, reimbursement, sponsorship commitment, or financial obligation proceeds without prior Treasurer (R-09) review/approval — escalating to a neutral VP or President if R-09 is conflicted. The Club applies: no budget, no event; no proposal, no approval; no documentation, no reimbursement; and no post-event report, no next event approval (unless waived by ExCo)." },
+        { label:"17. Management of Assets", text:"Club assets include, but are not limited to: the Sunway Nexus by SEC WhatsApp Community and sub-groups; the Sponsor Directory; digital channel accounts/credentials; event documentation and review reports; and physical equipment/materials. All assets must be handed to the incoming Committee at a formal handover meeting; the Club Auditor (R-08) may review asset records and handover completeness." },
+        { label:"18. Liabilities", text:"The Club accepts any loss of funds/assets as a non-recoverable loss. Members must never be held liable for the Club's liabilities. Severe or sustained financial insolvency may lead to suspension, restructuring, or dissolution — a graduated response subject to Student LIFE/SUSC-SCC review, not automatic dissolution." },
+        { label:"19(a)–(c). Communication accounts", text:"Accounts (club Gmail, Drive, Notion, AWI platforms, social media) must be used diligently for Club matters only, kept by committees, handed over at transition, and are Club assets owned by the Club — never by an individual Committee member." },
+        { label:"19(d)–(f). Password & access rules", text:"Annual password reset: all official passwords must change within 14 days of each new term, coordinated by the Secretary jointly with the President, stored in the official credential record, never shared via personal messaging apps. Access revocation: revoked within 48 hours of any Committee member resigning, stepping down, completing their term, or being removed — enforced by the Secretary. Two-person rule: changing the primary Club email password or removing access to primary accounts needs at least two ExCo members (Secretary and President, or another VP if either is conflicted) — no single individual may unilaterally lock/change access." },
+        { label:"19(g). Credential record", text:"The Secretary (R-06) must maintain an up-to-date credential record for all official accounts, updated on every password change, stored securely, and formally handed over at the AGM. The Club Auditor (R-08) reviews access records and reset compliance; the AWI Officer (R-11) may maintain Club digital infrastructure but must not unilaterally control Club accounts beyond that mandate." }
+      ]},
+      { id: "legalities", title: "Part 6, Clauses 20–25 — Legalities, Advisor, Parties & Charter Amendment", clauses: [
+        { label:"20. Liability Release", text:"Any liability release/disclaimer must be Student LIFE-endorsed to take effect. Any event with physical activity must have a Student LIFE-endorsed liability waiver in place before the event. Any digital/web-based data collection form must comply with clause 6(h)'s data handling standards and be approved by the President before deployment." },
+        { label:"21. Advisor", text:"An advisor is appointed by the University/College, offers guidance, and can freely contribute to Club decision-making — but must NOT execute any decision on the Club's behalf without Committee consent. The Club has one University-appointed Principal Advisor (R-00), and may additionally have one or more Co-Advisors subject to institutional approval." },
+        { label:"22–23. Second Party & Third Party", text:"The Second Party (employees of the University/College involved in Club operations) can be partially involved in Club decision-making. The Third Party (non-employees involved in operations) must NOT be involved in any decision-making process. Either can be replaced or removed via: a written request with valid reason; a signed petition among all Committee; approval from SUSC/SCC; and endorsement from Student LIFE." },
+        { label:"24. Amendment of Charter", text:"A proposal to amend the Charter can only be made during an EGM, and takes effect only if approved by at least two-thirds (2/3) of eligible voters present at the EGM vote, approved by SUSC/SCC, and endorsed by Student LIFE. Copies of the amended Charter must be kept by the Club, Student LIFE, and SUSC/SCC. Annexes A and B may be updated by ExCo (or the incoming ExCo at handover) without a formal amendment, provided no update creates new authority, removes existing rights, or contradicts the Charter's body." },
+        { label:"25. Dissolution", text:"A dissolution proposal can only be made during an EGM, taking effect only with approval from at least 75% of eligible voters present, approval from SUSC/SCC, and endorsement from Student LIFE. Remaining funds go to Sunway Education Group. Loss of an advisor is explicitly NOT a dissolution trigger — advisor staffing is a University decision, and the Club instead requests guidance and a window to secure a successor advisor." }
+      ]},
+      { id: "governance", title: "Part 7, Clauses 26–29 — Code of Conduct, Disputes & Confidentiality", clauses: [
+        { label:"26(a)–(c). Code of Conduct", text:"Committee members must act with integrity, professionalism, and in the Club's best interest at all times; must maintain confidentiality on internal matters; and any behaviour harming the Club's reputation — including misconduct, abuse of power, or unethical actions — may trigger disciplinary action." },
+        { label:"26(d). Conflict of interest declaration", text:"Any Committee member with a personal financial interest in, or personal relationship with, a sponsor, partner, or party involved in a Club decision must declare the conflict to the President or relevant VP, and must recuse themselves — the decision then passes to a neutral approving party or escalates to the President. The Club Auditor (R-08) must declare any conflict before reviewing any matter." },
+        { label:"27(a). Internal dispute resolution", text:"Conflicts between Committee members are first resolved through open discussion and mediation within the Committee, with the President and Vice President acting as mediators. If the dispute involves the President or Vice President, the Principal/Co-Adviser mediates instead. Matters are resolved at the lowest appropriate level; unresolved matters escalate to the President under Annex B, whose decision is final within the Club's internal authority structure." },
+        { label:"27(b). Escalation to Student LIFE", text:"If still unresolved, the issue must be formally reported to Student LIFE in writing. Student LIFE may conduct a mediation session to reach an amicable solution, and the decision made by Student LIFE is final and binding." },
+        { label:"29. Handling of Confidential Information", text:"All committee-related information — financial records, member lists, internal discussions, meeting minutes, Club documents, account credentials, strategy materials, partnership/sponsorship discussions, and unresolved governance matters — must be kept confidential. On completing a term, all digital assets (Drive, club emails, etc.) must be properly handed to the new Committee. Violating confidentiality may trigger disciplinary action determined by Student LIFE." },
+        { label:"29(d). Disclosure & authority limits", text:"Committee members must not disclose, forward, screenshot, reproduce, or share internal Club information with any Unauthorised Person, and may not represent the Club externally or claim authority beyond their formal role unless authorised by the President or the relevant VP. Any breach constitutes a governance failure under Annex B." }
+      ]}
+    ]
+  }
+];
+
+/* ═══════════════ PROGRESS HELPERS ═══════════════ */
+function secStatus(subjId, secId) {
+  const d = currentUser?.data?.subjects?.[subjId]?.sections?.[secId];
+  return d?.status || "not-started";
+}
+function secData(subjId, secId) {
+  return currentUser?.data?.subjects?.[subjId]?.sections?.[secId] || null;
+}
+function subjDoneCount(subj) {
+  return subj.sections.filter(s => secStatus(subj.id, s.id) === "complete").length;
+}
+function subjStatus(subj) {
+  const done = subjDoneCount(subj);
+  if (done === subj.sections.length) return "complete";
+  const any = subj.sections.some(s => secStatus(subj.id, s.id) !== "not-started");
+  return any ? "in-progress" : "not-started";
+}
+function sectionUnlocked(subj, idx) {
+  if (idx === 0) return true;
+  return secStatus(subj.id, subj.sections[idx-1].id) === "complete";
+}
+function saveUser() { sessionStorage.setItem("sec_user", JSON.stringify(currentUser)); }
+
+/* ═══════════════ LOGIN VIEW ═══════════════ */
+function renderLogin(msg) {
+  app.innerHTML = `
+  <div class="login-wrap"><div class="login-card">
+    <div class="login-head">
+      <img class="brand-mark lg" src="${LOGO_SRC}" alt="SEC logo">
+      <h1>SEC Learning Portal</h1>
+      <div class="tagline">Know what you're here to do.</div>
+    </div>
+    ${msg ? `<div class="err">${esc(msg)}</div>` : ""}
+    <div id="login-err"></div>
+    <div class="field"><label>Full name</label><input id="li-name" autocomplete="name" placeholder="e.g. Amadeus Liew"></div>
+    <div class="field"><label>Email address</label><input id="li-email" type="email" autocomplete="email" placeholder="you@imail.sunway.edu.my"></div>
+    <div class="field"><label>Club password</label><input id="li-pw" type="password" placeholder="••••••••"></div>
+    <button class="btn btn-primary" id="li-btn" style="width:100%">Enter the portal</button>
+    <div class="login-foot"><button id="admin-link">Admin access →</button></div>
+  </div></div>`;
+  $("#li-btn").onclick = doLogin;
+  $("#li-pw").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
+  $("#admin-link").onclick = adminGate;
+}
+
+async function doLogin() {
+  const name = $("#li-name").value.trim(), email = $("#li-email").value.trim(), password = $("#li-pw").value;
+  const errBox = $("#login-err");
+  errBox.innerHTML = "";
+  if (!name || !email || !password) { errBox.innerHTML = `<div class="err">Fill in all three fields to continue.</div>`; return; }
+  const btn = $("#li-btn");
+  btn.disabled = true; btn.innerHTML = `<span class="spin"></span> Loading...`;
+  try {
+    const r = await api({ action: "login", name, email, password });
+    if (r.error) { errBox.innerHTML = `<div class="err">${esc(r.error)}</div>`; btn.disabled = false; btn.textContent = "Enter the portal"; return; }
+    sessionToken = r.token;
+    currentUser = { name: r.name, email: email.toLowerCase().trim(), role: r.role, data: r.data };
+    sessionStorage.setItem("sec_token", sessionToken);
+    saveUser();
+    renderDashboard();
+  } catch(e) {
+    errBox.innerHTML = `<div class="err">Could not reach the portal server. Check your connection and try again.</div>`;
+    btn.disabled = false; btn.textContent = "Enter the portal";
+  }
+}
+
+function adminGate() {
+  const key = prompt("Enter admin key:");
+  if (!key) return;
+  sessionStorage.setItem("sec_admin_key", key);
+  renderAdmin();
+}
+
+function signOut() {
+  sessionStorage.removeItem("sec_token");
+  sessionStorage.removeItem("sec_user");
+  sessionToken = null; currentUser = null;
+  renderLogin();
+}
+
+/* ═══════════════ SHELL ═══════════════ */
+function topbar(extra) {
+  return `<div class="topbar">
+    <img class="brand-mark" style="width:30px;height:30px" src="${LOGO_SRC}" alt="SEC logo">
+    <div class="title">SEC Learning Portal</div>
+    <div class="spacer"></div>
+    ${extra || ""}
+    <span class="pill">${esc(currentUser?.name || "")}</span>
+    <button class="btn btn-ghost btn-sm" onclick="signOut()">Sign out</button>
+  </div>`;
+}
+
+/* ═══════════════ DASHBOARD ═══════════════ */
+function renderDashboard() {
+  const h = new Date().getHours();
+  const tod = h < 12 ? "morning" : h < 18 ? "afternoon" : "evening";
+  const first = (currentUser.name || "").split(" ")[0];
+  const totalSubj = SUBJECTS.length;
+  const doneSubj = SUBJECTS.filter(s => subjStatus(s) === "complete").length;
+
+  const cards = SUBJECTS.map(subj => {
+    const done = subjDoneCount(subj), total = subj.sections.length;
+    const pct = Math.round(done / total * 100);
+    const st = subjStatus(subj);
+    const chip = st === "complete" ? `<span class="chip green">Complete</span>` : st === "in-progress" ? `<span class="chip amber">In progress</span>` : `<span class="chip grey">Not started</span>`;
+    const circ = 2 * Math.PI * 26;
+    return `<div class="card">
+      <div class="row">
+        <div class="ring-wrap">
+          <svg class="ring" width="64" height="64" viewBox="0 0 64 64">
+            <circle class="bg" cx="32" cy="32" r="26" fill="none" stroke-width="6"/>
+            <circle class="fg" cx="32" cy="32" r="26" fill="none" stroke-width="6"
+              stroke-dasharray="${circ}" stroke-dashoffset="${circ * (1 - pct/100)}"/>
+          </svg>
+          <div class="ring-num">${pct}%</div>
+        </div>
+        <div style="flex:1">
+          <h3>${esc(subj.title)}</h3>
+          <div class="desc">${esc(subj.description)}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div class="meta"><span>${total} sections</span><span>~${subj.estimatedMinutes} min</span>${chip}</div>
+        <button class="btn btn-primary btn-sm" onclick="openSubject('${subj.id}')">${st === "not-started" ? "Start" : st === "complete" ? "Review" : "Continue"}</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  app.innerHTML = topbar() + `<div class="shell">
+    <h1 class="greeting">Good ${tod}, ${esc(first)}.</h1>
+    <div class="role-badge">${esc(currentUser.role || "Member")}</div>
+    <div class="overall">
+      <div class="lbl">${doneSubj} of ${totalSubj} subject${totalSubj === 1 ? "" : "s"} complete</div>
+      <div class="pbar"><div style="width:${totalSubj ? Math.round(doneSubj/totalSubj*100) : 0}%"></div></div>
+    </div>
+    <div class="cards">${cards}</div>
+  </div>`;
+}
+
+/* ═══════════════ SUBJECT VIEW ═══════════════ */
+let curSubj = null, curSecIdx = 0;
+
+function openSubject(id) {
+  curSubj = SUBJECTS.find(s => s.id === id);
+  // land on first incomplete unlocked section
+  curSecIdx = 0;
+  for (let i = 0; i < curSubj.sections.length; i++) {
+    if (secStatus(curSubj.id, curSubj.sections[i].id) !== "complete") { curSecIdx = i; break; }
+    if (i === curSubj.sections.length - 1) curSecIdx = i;
+  }
+  renderSubject("reader");
+}
+
+function renderSubject(mode, payload) {
+  const subj = curSubj;
+  const sidebar = subj.sections.map((sec, i) => {
+    const st = secStatus(subj.id, sec.id);
+    const unlocked = sectionUnlocked(subj, i);
+    let dot;
+    if (st === "complete") dot = `<span class="sec-dot done">✓</span>`;
+    else if (!unlocked) dot = `<span class="sec-dot">🔒</span>`;
+    else if (st === "in-progress") dot = `<span class="sec-dot progress">${i+1}</span>`;
+    else dot = `<span class="sec-dot">${i+1}</span>`;
+    return `<button class="sec-item ${i === curSecIdx ? "active" : ""}" ${unlocked ? "" : "disabled"} onclick="gotoSection(${i})">${dot}<span>${esc(sec.title)}</span></button>`;
+  }).join("");
+
+  app.innerHTML = topbar() + `<div class="shell">
+    <button class="back-link" onclick="renderDashboard()">← All subjects</button>
+    <h1 style="font-size:26px;margin-bottom:4px">${esc(subj.title)}</h1>
+    <p style="color:var(--muted);margin-bottom:22px">${esc(subj.description)}</p>
+    <div class="subj-layout">
+      <div class="sidebar">${sidebar}</div>
+      <div class="subj-main" id="subj-main"></div>
+    </div>
+  </div>`;
+
+  if (mode === "quiz") startQuiz();
+  else if (mode === "section-complete") renderSectionComplete(payload);
+  else if (mode === "subject-complete") renderSubjectComplete();
+  else renderReader();
+}
+
+function gotoSection(i) {
+  if (!sectionUnlocked(curSubj, i)) return;
+  curSecIdx = i;
+  renderSubject("reader");
+}
+
+/* ═══════════════ READER ═══════════════ */
+function renderReader() {
+  const subj = curSubj, sec = subj.sections[curSecIdx];
+  const already = secStatus(subj.id, sec.id) === "complete";
+  const sdExisting = secData(subj.id, sec.id);
+  const hasPriorAttempt = !!(sdExisting && (sdExisting.attempts || []).length > 0);
+
+  const clauses = sec.clauses.map(c => `<div class="clause-block">
+    <div class="clause-label">${esc(c.label)}</div><p>${esc(c.text)}</p>
+  </div>`).join("");
+
+  let msg;
+  if (already) msg = "You've already passed this section — review freely or retake the check.";
+  else if (hasPriorAttempt) msg = "You've attempted this section before — retake the check whenever you're ready.";
+  else msg = "Read through this section, then take the comprehension check whenever you're ready.";
+
+  $("#subj-main").innerHTML = `
+    <div class="reader-head">
+      <div class="eyebrow">Section ${curSecIdx+1} of ${subj.sections.length} — ${esc(subj.title)}</div>
+      <h1>${esc(sec.title)}</h1>
+    </div>
+    <div class="reader-body" id="reader-body">${clauses}</div>
+    <div class="timer-banner" id="timer-banner">
+      <span id="timer-msg">${msg}</span>
+      <button class="btn btn-primary" id="quiz-btn">Take comprehension check →</button>
+    </div>`;
+
+  $("#quiz-btn").onclick = () => { renderSubject("quiz"); };
+}
+
+/* ═══════════════ QUIZ ═══════════════ */
+let quiz = null;
+
+async function startQuiz() {
+  const subj = curSubj, sec = subj.sections[curSecIdx];
+  $("#subj-main").innerHTML = `<div class="quiz-wrap" style="text-align:center;padding:70px 30px;color:var(--muted)"><span class="spin" style="border-color:var(--amber-line);border-top-color:var(--amber)"></span>&nbsp; Loading comprehension check…</div>`;
+  const r = await api({ action: "getQuestions", subjectId: subj.id, sectionId: sec.id });
+  if (r.error) { $("#subj-main").innerHTML = `<div class="quiz-wrap"><div class="err">${esc(r.error)}</div><button class="btn btn-ghost" onclick="renderSubject('reader')">← Back to reading</button></div>`; return; }
+  quiz = { questions: r.questions, quizKey: r.quizKey, idx: 0, answers: new Array(r.questions.length).fill(null), started: Date.now() };
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = quiz.questions[quiz.idx];
+  const letters = "ABCD";
+  const opts = q.options.map((opt, i) => `
+    <button class="opt ${quiz.answers[quiz.idx] === opt ? "sel" : ""}" onclick="pickOption(${i})">
+      <span class="letter">${letters[i] || i+1}</span><span>${esc(opt)}</span>
+    </button>`).join("");
+  const last = quiz.idx === quiz.questions.length - 1;
+  $("#subj-main").innerHTML = `<div class="quiz-wrap">
+    <div class="q-progress">Question ${quiz.idx+1} of ${quiz.questions.length}</div>
+    <div class="q-text">${esc(q.q)}</div>
+    ${opts}
+    <div class="quiz-foot">
+      <button class="btn btn-primary" id="q-next" ${quiz.answers[quiz.idx] === null ? "disabled" : ""}>${last ? "Submit answers" : "Next →"}</button>
+    </div>
+  </div>`;
+  $("#q-next").onclick = () => {
+    if (quiz.idx < quiz.questions.length - 1) { quiz.idx++; renderQuestion(); }
+    else submitQuiz();
+  };
+}
+
+function pickOption(i) {
+  quiz.answers[quiz.idx] = quiz.questions[quiz.idx].options[i];
+  renderQuestion();
+}
+
+async function submitQuiz() {
+  const btn = $("#q-next");
+  btn.disabled = true; btn.innerHTML = `<span class="spin"></span> Grading…`;
+  const subj = curSubj, sec = subj.sections[curSecIdx];
+  const timeSeconds = Math.round((Date.now() - quiz.started) / 1000);
+  const r = await api({ action: "grade", quizKey: quiz.quizKey, answers: quiz.answers, timeSeconds });
+  if (r.error) {
+    $("#subj-main").innerHTML = `<div class="quiz-wrap"><div class="err">${esc(r.error)}</div><button class="btn btn-ghost" onclick="renderSubject('reader')">← Back to reading</button></div>`;
+    return;
+  }
+  // sync progress from server
+  try {
+    const p = await api({ action: "getProgress" });
+    if (p.data) { currentUser.data = p.data; saveUser(); }
+  } catch(e) {}
+  renderQuizResults(r, timeSeconds);
+}
+
+function renderQuizResults(r, timeSeconds) {
+  const letters = "ABCD";
+  const blocks = quiz.questions.map((q, qi) => {
+    const res = r.results[qi];
+    const opts = q.options.map((opt, i) => {
+      const chosen = quiz.answers[qi] === opt;
+      let cls = "";
+      if (chosen && res.correct) cls = "right";
+      else if (chosen && !res.correct) cls = "wrong";
+      return `<div class="opt ${cls}" style="cursor:default">
+        <span class="letter">${letters[i] || i+1}</span><span>${esc(opt)} ${chosen && res.correct ? "✓" : chosen ? "✗" : ""}</span>
+      </div>`;
+    }).join("");
+    const explain = !res.correct && res.explain ? `<div class="explain">${esc(res.explain)}</div>` : "";
+    return `<div style="margin-bottom:26px"><div class="q-text" style="font-size:16.5px">${qi+1}. ${esc(q.q)}</div>${opts}${explain}</div>`;
+  }).join("");
+
+  const passed = r.passed;
+  const footer = passed
+    ? `<button class="btn btn-primary" onclick="afterPass(${r.score},${r.total},${timeSeconds})">Continue →</button>`
+    : `<button class="btn btn-primary" onclick="renderSubject('reader')">Review section and try again</button>`;
+
+  $("#subj-main").innerHTML = `<div class="quiz-wrap">
+    <div class="${passed ? "ok-note" : "err"}" style="font-size:15px">
+      ${passed ? "Passed" : "Not quite"} — you scored <b>${r.score}/${r.total}</b>${passed ? "." : " (80% needed). Re-read the section, then the check will unlock again."}
+    </div>
+    ${blocks}
+    <div class="quiz-foot">${footer}</div>
+  </div>`;
+}
+
+function afterPass(score, total, timeSeconds) {
+  const subj = curSubj;
+  const allDone = subj.sections.every(s => secStatus(subj.id, s.id) === "complete");
+  if (allDone) renderSubject("subject-complete");
+  else renderSubject("section-complete", { score, total, timeSeconds });
+}
+
+function renderSectionComplete(p) {
+  const subj = curSubj, sec = subj.sections[curSecIdx];
+  const mins = Math.floor(p.timeSeconds / 60), secs = p.timeSeconds % 60;
+  $("#subj-main").innerHTML = `<div class="celebrate">
+    <div class="big">🎉</div>
+    <h2>Section complete</h2>
+    <p style="color:var(--muted)">${esc(sec.title)} — nicely done. That's another piece of the Charter you can act on.</p>
+    <div class="stats">
+      <div><b>${p.score}/${p.total}</b>Score</div>
+      <div><b>${mins}m ${secs}s</b>Time taken</div>
+    </div>
+    <button class="btn btn-primary" onclick="nextSection()">Continue →</button>
+  </div>`;
+}
+
+function nextSection() {
+  if (curSecIdx < curSubj.sections.length - 1) { curSecIdx++; renderSubject("reader"); }
+  else renderSubject("subject-complete");
+}
+
+function renderSubjectComplete() {
+  const subj = curSubj;
+  let totalTime = 0, totalScore = 0, totalMax = 0;
+  subj.sections.forEach(s => {
+    const d = secData(subj.id, s.id);
+    if (d) {
+      totalTime += d.timeSpentSeconds || 0;
+      const best = (d.attempts || []).slice().reverse().find(a => a.total && (a.score/a.total) >= .8) || (d.attempts||[])[d.attempts.length-1];
+      if (best) { totalScore += best.score; totalMax += best.total; }
+    }
+  });
+  const avg = totalMax ? Math.round(totalScore/totalMax*100) : 0;
+  $("#subj-main").innerHTML = `<div class="celebrate">
+    <div class="big">🏆</div>
+    <h2>${esc(subj.title)} — complete</h2>
+    <p style="color:var(--muted);max-width:420px">Every section passed. You now know what you're here to do — and what the Charter expects of everyone else.</p>
+    <div class="stats">
+      <div><b>${subj.sections.length}</b>Sections</div>
+      <div><b>${Math.round(totalTime/60)}m</b>Total time</div>
+      <div><b>${avg}%</b>Avg score</div>
+    </div>
+    <button class="btn btn-primary" onclick="renderDashboard()">Back to all subjects →</button>
+  </div>`;
+}
+
+/* ═══════════════ ADMIN ═══════════════ */
+let adminData = { members: [], registerCount: 0 }, adminTab = "members", genQuestions = null;
+
+function adminKey() { return sessionStorage.getItem("sec_admin_key") || ""; }
+
+async function renderAdmin() {
+  app.innerHTML = `<div class="topbar">
+    <img class="brand-mark" style="width:30px;height:30px" src="${LOGO_SRC}" alt="SEC logo">
+    <div class="title">SEC Learning Portal — <span style="color:var(--amber)">Admin Dashboard</span></div>
+    <div class="spacer"></div>
+    <button class="btn btn-ghost btn-sm" onclick="exitAdmin()">Exit admin</button>
+  </div>
+  <div class="shell">
+    <div class="tabs">
+      <button class="tab ${adminTab==="members"?"active":""}" onclick="setTab('members')">Members</button>
+      <button class="tab ${adminTab==="gen"?"active":""}" onclick="setTab('gen')">Question Generator</button>
+      <button class="tab ${adminTab==="settings"?"active":""}" onclick="setTab('settings')">Settings</button>
+    </div>
+    <div id="admin-body"><div style="color:var(--muted)">Loading…</div></div>
+  </div>
+  <div id="panel-root"></div>`;
+
+  if (adminTab === "members") {
+    const r = await api({ action: "loadAll", adminKey: adminKey() });
+    if (r.error) {
+      $("#admin-body").innerHTML = `<div class="err">${esc(r.error)} — check your admin key.</div>
+        <button class="btn btn-ghost" onclick="sessionStorage.removeItem('sec_admin_key');adminGate()">Re-enter admin key</button>`;
+      return;
+    }
+    adminData.members = r.members || [];
+    adminData.registerCount = r.registerCount || 0;
+    renderMembersTab();
+  } else if (adminTab === "gen") renderGenTab();
+  else renderSettingsTab();
+}
+
+function exitAdmin() {
+  if (currentUser && sessionToken) renderDashboard(); else renderLogin();
+}
+function setTab(t) { adminTab = t; renderAdmin(); }
+
+/* ---- members tab ---- */
+function totalSections() { return SUBJECTS.reduce((n,s)=>n+s.sections.length,0); }
+function fmtTime(s) {
+  s = Math.round(s || 0);
+  if (s < 60) return s + "s";
+  const m = Math.floor(s / 60), r = s % 60;
+  return r ? `${m}m ${r}s` : `${m}m`;
+}
+
+function memberStats(m) {
+  let passed = 0, attempts = 0, time = 0, last = m.lastActive || 0;
+  SUBJECTS.forEach(subj => subj.sections.forEach(sec => {
+    const d = m.subjects?.[subj.id]?.sections?.[sec.id];
+    if (!d) return;
+    if (d.status === "complete") passed++;
+    attempts += (d.attempts || []).length;
+    time += d.timeSpentSeconds || 0;
+  }));
+  return { passed, attempts, time, last };
+}
+
+function renderMembersTab() {
+  const total = totalSections();
+  const ms = adminData.members;
+  const started = ms.length;
+  let cleared = 0, inprog = 0, totAtt = 0;
+  const rows = ms.map((m, i) => {
+    const s = memberStats(m);
+    totAtt += s.attempts;
+    if (s.passed === total) cleared++;
+    else if (s.passed > 0 || s.attempts > 0) inprog++;
+    const chip = s.passed === total ? `<span class="chip green">Complete</span>` : (s.passed>0||s.attempts>0) ? `<span class="chip amber">In progress</span>` : `<span class="chip grey">Not started</span>`;
+    return `<tr onclick="openDetail(${i})">
+      <td><b>${esc(m.name)}</b><br><span style="color:var(--muted);font-size:12px">${esc(m.email)}</span></td>
+      <td><span class="role-badge" style="margin:0">${esc(m.role||"Member")}</span></td>
+      <td><span class="minibar"><div style="width:${total?Math.round(s.passed/total*100):0}%"></div></span>${s.passed}/${total}</td>
+      <td>${chip}</td>
+      <td>${s.attempts}</td>
+      <td>${fmtTime(s.time)}</td>
+      <td style="font-size:12px;color:var(--muted)">${s.last ? new Date(s.last).toLocaleString() : "—"}</td>
+      <td><button class="del-x" onclick="event.stopPropagation();delMember('${esc(m.email)}')" title="Delete member">✕</button></td>
+    </tr>`;
+  }).join("");
+
+  const regWarn = adminData.registerCount === 0 ? `<div class="warn-banner">⚠ Register is empty — any email can log in with the club password. Add committee emails in Settings to enforce access control.</div>` : "";
+
+  $("#admin-body").innerHTML = regWarn + `
+    <div class="stat-grid">
+      <div class="stat"><div class="n">${started}</div><div class="l">Members started</div></div>
+      <div class="stat"><div class="n">${cleared}</div><div class="l">Fully cleared</div></div>
+      <div class="stat"><div class="n">${inprog}</div><div class="l">In progress</div></div>
+      <div class="stat"><div class="n">${totAtt}</div><div class="l">Total attempts</div></div>
+    </div>
+    <table class="members">
+      <thead><tr><th>Member</th><th>Role</th><th>Sections passed</th><th>Status</th><th>Attempts</th><th>Time</th><th>Last active</th><th></th></tr></thead>
+      <tbody>${rows || `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:26px">No members have logged in yet.</td></tr>`}</tbody>
+    </table>`;
+}
+
+async function delMember(email) {
+  if (!confirm(`Delete all progress for ${email}? This cannot be undone.`)) return;
+  const r = await api({ action: "deleteMember", email, adminKey: adminKey() });
+  if (r.error) alert(r.error);
+  renderAdmin();
+}
+
+function openDetail(i) {
+  const m = adminData.members[i];
+  const rows = [];
+  const attBlocks = [];
+  SUBJECTS.forEach(subj => subj.sections.forEach(sec => {
+    const d = m.subjects?.[subj.id]?.sections?.[sec.id];
+    const st = d?.status || "not-started";
+    const chip = st === "complete" ? `<span class="chip green">Complete</span>` : st === "in-progress" ? `<span class="chip amber">In progress</span>` : `<span class="chip grey">—</span>`;
+    const atts = d?.attempts || [];
+    const lastAtt = atts.length ? new Date(atts[atts.length-1].ts).toLocaleString() : "—";
+    rows.push(`<tr><td>${esc(sec.title)}</td><td>${chip}</td><td>${d?d.bestScore:0}${atts.length?"/"+(atts[atts.length-1].total||"?"):""}</td><td>${atts.length}</td><td>${d?fmtTime(d.timeSpentSeconds||0):"—"}</td><td style="font-size:11.5px">${lastAtt}</td></tr>`);
+    if (atts.length) {
+      const inner = atts.map((a, ai) => {
+        const qr = (a.questionResults||[]).map((q, qi) =>
+          `<div class="qr">Q${qi+1}: Selected “${esc((q.selectedOption||"").slice(0,60))}${(q.selectedOption||"").length>60?"…":""}” <span class="${q.correct?"yes":"no"}">${q.correct?"✓":"✗"}</span></div>`).join("");
+        return `<div class="att">
+          <div class="hd">Attempt ${ai+1} (${new Date(a.ts).toLocaleString()}) — Score: ${a.score}/${a.total}
+          ${a.total && a.score/a.total >= .8 ? '<span style="color:var(--green)">PASSED</span>' : ''}</div>
+          ${qr}</div>`;
+      }).join("");
+      attBlocks.push(`<details class="attempts"><summary>${esc(sec.title)} — ${atts.length} attempt${atts.length>1?"s":""}</summary>${inner}</details>`);
+    }
+  }));
+
+  $("#panel-root").innerHTML = `
+    <div class="panel-overlay" onclick="closeDetail()"></div>
+    <div class="detail-panel">
+      <button class="back-link" onclick="closeDetail()">← Close</button>
+      <h2>${esc(m.name)}</h2>
+      <div class="sub">${esc(m.email)} · <span class="role-badge" style="margin:0">${esc(m.role||"Member")}</span></div>
+      <h3 style="font-size:15px;margin-bottom:8px">Per-section breakdown</h3>
+      <table class="breakdown"><thead><tr><th>Section</th><th>Status</th><th>Best</th><th>Attempts</th><th>Time</th><th>Last attempt</th></tr></thead><tbody>${rows.join("")}</tbody></table>
+      <h3 style="font-size:15px;margin-bottom:8px">Attempt history</h3>
+      ${attBlocks.join("") || `<p style="color:var(--muted);font-size:13.5px">No attempts yet.</p>`}
+      <div style="margin-top:22px"><button class="btn btn-danger btn-sm" onclick="delMember('${esc(m.email)}')">Delete member</button></div>
+    </div>`;
+}
+function closeDetail() { $("#panel-root").innerHTML = ""; }
+
+/* ---- question generator tab ---- */
+function renderGenTab() {
+  const subjOpts = SUBJECTS.map(s => `<option value="${s.id}">${esc(s.title)}</option>`).join("");
+  $("#admin-body").innerHTML = `
+    <div class="settings-card" style="max-width:760px">
+      <h3>Generate comprehension questions</h3>
+      <p style="color:var(--muted);font-size:13.5px;margin-bottom:16px">Gemini drafts scenario questions from the section text. You review, edit, and approve before members ever see them. Generation runs server-side — the key never leaves Script Properties.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="field"><label>Subject</label><select id="gen-subj" onchange="fillGenSections()">${subjOpts}</select></div>
+        <div class="field"><label>Section</label><select id="gen-sec"></select></div>
+      </div>
+      <div class="field"><label>Section content</label>
+        <textarea id="gen-content" rows="9" placeholder="Paste section content here (or upload PDF)"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('gen-pdf').click()">Upload PDF</button>
+        <input type="file" id="gen-pdf" accept="application/pdf" class="hidden">
+        <button class="btn btn-ghost btn-sm" onclick="useSectionText()">Use built-in section text</button>
+      </div>
+      <div class="field"><label>Gemini API Key — stored in Script Properties server-side, never in this page</label>
+        <input id="gen-key" type="password" placeholder="Leave blank if already set">
+      </div>
+      <div id="gen-msg"></div>
+      <button class="btn btn-primary" id="gen-btn" onclick="generateQuestions()">Generate questions</button>
+    </div>
+    <div id="gen-results"></div>`;
+  fillGenSections();
+  $("#gen-pdf").addEventListener("change", handlePdfUpload);
+}
+
+function fillGenSections() {
+  const subj = SUBJECTS.find(s => s.id === $("#gen-subj").value);
+  $("#gen-sec").innerHTML = subj.sections.map(s => `<option value="${s.id}">${esc(s.title)}</option>`).join("");
+}
+
+function useSectionText() {
+  const subj = SUBJECTS.find(s => s.id === $("#gen-subj").value);
+  const sec = subj.sections.find(s => s.id === $("#gen-sec").value);
+  $("#gen-content").value = sec.clauses.map(c => c.label + "\n" + c.text).join("\n\n");
+}
+
+async function handlePdfUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  $("#gen-msg").innerHTML = `<div class="ok-note">Extracting text from PDF…</div>`;
+  try {
+    if (!window.pdfjsLib) {
+      await new Promise((res, rej) => {
+        const s = document.createElement("script");
+        s.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+        s.onload = res; s.onerror = rej;
+        document.head.appendChild(s);
+      });
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+    let text = "";
+    for (let p = 1; p <= pdf.numPages; p++) {
+      const page = await pdf.getPage(p);
+      const tc = await page.getTextContent();
+      text += tc.items.map(i => i.str).join(" ") + "\n";
+    }
+    $("#gen-content").value = text.trim();
+    $("#gen-msg").innerHTML = `<div class="ok-note">Extracted ${pdf.numPages} page${pdf.numPages>1?"s":""} of text. Review before generating.</div>`;
+  } catch(err) {
+    $("#gen-msg").innerHTML = `<div class="err">Couldn't read that PDF. Paste the text manually instead.</div>`;
+  }
+}
+
+async function generateQuestions() {
+  const content = $("#gen-content").value.trim();
+  if (!content) { $("#gen-msg").innerHTML = `<div class="err">Add section content first — paste text or upload a PDF.</div>`; return; }
+  const key = $("#gen-key").value.trim();
+  const btn = $("#gen-btn");
+  btn.disabled = true; btn.innerHTML = `<span class="spin"></span> Generating with Gemini…`;
+  $("#gen-msg").innerHTML = "";
+  try {
+    if (key) {
+      const rk = await api({ action: "setProp", key: "GEMINI_API_KEY", value: key, adminKey: adminKey() });
+      if (rk.error) throw new Error(rk.error);
+      $("#gen-key").value = "";
+    }
+    const subj = SUBJECTS.find(s => s.id === $("#gen-subj").value);
+    const sec = subj.sections.find(s => s.id === $("#gen-sec").value);
+    const r = await api({ action: "generateQuestions", subjectId: subj.id, sectionId: sec.id, sectionTitle: sec.title, content, adminKey: adminKey() });
+    if (r.error) throw new Error(r.error);
+    genQuestions = r.questions;
+    renderGenResults(subj.id, sec.id, sec.title);
+  } catch(err) {
+    $("#gen-msg").innerHTML = `<div class="err">${esc(err.message || err)}</div>`;
+  }
+  btn.disabled = false; btn.textContent = "Generate questions";
+}
+
+function renderGenResults(subjectId, sectionId, sectionTitle) {
+  const letters = "ABCD";
+  const blocks = genQuestions.map((q, qi) => {
+    const opts = q.options.map((o, oi) =>
+      `<div class="go ${oi === q.correct ? "correct" : ""}"><span class="letter" style="width:22px;height:22px;font-size:11px;flex:none;border-radius:50%;background:var(--amber-soft);border:1px solid var(--amber-line);color:#92400E;display:flex;align-items:center;justify-content:center;font-weight:700">${letters[oi]}</span><span>${esc(o)} ${oi===q.correct?"✓ correct":""}</span></div>`).join("");
+    return `<div class="gen-q" id="genq-${qi}">
+      <div class="qt">${qi+1}. ${esc(q.q)}</div>${opts}
+      <div class="ex">${esc(q.explain)}</div>
+      <div class="acts">
+        <button class="btn btn-ghost btn-sm" onclick="editGenQ(${qi})">Edit</button>
+        <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="delGenQ(${qi},'${subjectId}','${sectionId}','${esc(sectionTitle)}')">Delete</button>
+      </div>
+    </div>`;
+  }).join("");
+  $("#gen-results").innerHTML = `
+    <h3 style="margin:22px 0 12px">Review generated questions — ${esc(sectionTitle)}</h3>
+    ${blocks || `<p style="color:var(--muted)">No questions left. Generate again.</p>`}
+    <div id="save-msg"></div>
+    ${genQuestions.length ? `<button class="btn btn-primary" onclick="saveGenQuestions('${subjectId}','${sectionId}','${esc(sectionTitle)}')">Approve &amp; save to portal</button>` : ""}`;
+}
+
+function editGenQ(qi) {
+  const q = genQuestions[qi];
+  const nq = prompt("Question text:", q.q); if (nq === null) return;
+  q.q = nq;
+  for (let i = 0; i < q.options.length; i++) {
+    const no = prompt(`Option ${"ABCD"[i]}${i===q.correct?" (correct)":""}:`, q.options[i]);
+    if (no === null) break; q.options[i] = no;
+  }
+  const nc = prompt("Index of correct option (0–3):", q.correct);
+  if (nc !== null && !isNaN(+nc) && +nc >= 0 && +nc < q.options.length) q.correct = +nc;
+  const ne = prompt("Explanation:", q.explain); if (ne !== null) q.explain = ne;
+  renderGenResults($("#gen-subj").value, $("#gen-sec").value, SUBJECTS.find(s=>s.id===$("#gen-subj").value).sections.find(s=>s.id===$("#gen-sec").value).title);
+}
+
+function delGenQ(qi, subjectId, sectionId, sectionTitle) {
+  genQuestions.splice(qi, 1);
+  renderGenResults(subjectId, sectionId, sectionTitle);
+}
+
+async function saveGenQuestions(subjectId, sectionId, sectionTitle) {
+  const r = await api({ action: "saveQuestions", subjectId, sectionId, questions: genQuestions, adminKey: adminKey() });
+  $("#save-msg").innerHTML = r.error
+    ? `<div class="err">${esc(r.error)}</div>`
+    : `<div class="ok-note">Questions saved. Members will get these questions for ${esc(sectionTitle)}.</div>`;
+}
+
+/* ---- settings tab ---- */
+async function renderSettingsTab() {
+  $("#admin-body").innerHTML = `
+    <div class="settings-card">
+      <h3>Club password</h3>
+      <div class="field"><label>New club password (what members type to log in)</label><input id="set-clubpw" type="password"></div>
+      <button class="btn btn-primary btn-sm" onclick="setProp('CLUB_PASSWORD','set-clubpw')">Update club password</button>
+    </div>
+    <div class="settings-card">
+      <h3>Admin key</h3>
+      <div class="field"><label>New admin key (dashboard access)</label><input id="set-adminkey" type="password"></div>
+      <button class="btn btn-primary btn-sm" onclick="setProp('ADMIN_KEY','set-adminkey')">Update admin key</button>
+    </div>
+    <div class="settings-card">
+      <h3>Committee register</h3>
+      <div id="reg-warn"></div>
+      <div id="reg-list" style="margin-bottom:14px;color:var(--muted)">Loading…</div>
+      <div style="display:grid;grid-template-columns:2fr 1.5fr 1fr auto;gap:8px;align-items:end">
+        <div class="field" style="margin:0"><label>Email</label><input id="reg-email" type="email"></div>
+        <div class="field" style="margin:0"><label>Name</label><input id="reg-name"></div>
+        <div class="field" style="margin:0"><label>Role</label><input id="reg-role" placeholder="R-11 · AWI Officer"></div>
+        <button class="btn btn-primary btn-sm" style="height:42px" onclick="addReg()">Add</button>
+      </div>
+      <div id="reg-msg" style="margin-top:10px"></div>
+    </div>`;
+  loadRegister();
+}
+
+async function setProp(key, inputId) {
+  const value = document.getElementById(inputId).value;
+  if (!value) { alert("Enter a value first."); return; }
+  const r = await api({ action: "setProp", key, value, adminKey: adminKey() });
+  if (r.error) { alert(r.error); return; }
+  if (key === "ADMIN_KEY") sessionStorage.setItem("sec_admin_key", value);
+  document.getElementById(inputId).value = "";
+  alert("Updated.");
+}
+
+async function loadRegister() {
+  const r = await api({ action: "getRegister", adminKey: adminKey() });
+  if (r.error) { $("#reg-list").innerHTML = `<div class="err">${esc(r.error)}</div>`; return; }
+  const rows = r.rows || [];
+  $("#reg-warn").innerHTML = rows.length === 0
+    ? `<div class="warn-banner">⚠ Register is empty — any email can log in. Add committee emails to enforce access control.</div>` : "";
+  $("#reg-list").innerHTML = rows.map(x => `
+    <div class="reg-row">
+      <span class="em">${esc(x.email)}</span>
+      <span>${esc(x.name)}</span>
+      <span style="color:var(--muted);font-size:12.5px">${esc(x.role)}</span>
+      <button class="del-x" onclick="removeReg('${esc(x.email)}')" title="Remove">✕</button>
+    </div>`).join("") || `<p style="color:var(--muted);font-size:13.5px">No entries yet.</p>`;
+}
+
+async function addReg() {
+  const email = $("#reg-email").value.trim(), name = $("#reg-name").value.trim(), role = $("#reg-role").value.trim();
+  if (!email) { $("#reg-msg").innerHTML = `<div class="err">Email is required.</div>`; return; }
+  const r = await api({ action: "addRegister", email, name, role, adminKey: adminKey() });
+  $("#reg-msg").innerHTML = r.error ? `<div class="err">${esc(r.error)}</div>` : `<div class="ok-note">Added ${esc(email)}.</div>`;
+  if (!r.error) { $("#reg-email").value = $("#reg-name").value = $("#reg-role").value = ""; loadRegister(); }
+}
+
+async function removeReg(email) {
+  if (!confirm(`Remove ${email} from the register? They will no longer be able to log in.`)) return;
+  const r = await api({ action: "removeRegister", email, adminKey: adminKey() });
+  if (r.error) alert(r.error);
+  loadRegister();
+}
+
+/* ═══════════════ INIT ═══════════════ */
+if (SHEETS_API_URL.includes("PASTE_YOUR")) {
+  app.innerHTML = `<div class="login-wrap"><div class="login-card">
+    <div class="login-head"><img class="brand-mark lg" src="${LOGO_SRC}" alt="SEC logo"><h1>SEC Learning Portal</h1></div>
+    <div class="err">Not configured yet: open this file and set <b>SHEETS_API_URL</b> at the top of the script to your deployed Apps Script web-app URL.</div>
+  </div></div>`;
+} else if (sessionToken && currentUser) {
+  renderDashboard();
+} else {
+  renderLogin();
+}
+</script>
+</body>
+</html>
